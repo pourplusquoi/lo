@@ -186,6 +186,21 @@ func PartitionBy[T any, K comparable](collection []T, iteratee func(x T) K) [][]
 	// return Values[K, []T](groups)
 }
 
+func Bisect[T any](collection []T, predicate func(T) bool) int {
+	size := len(collection)
+	left := 0
+	right := size
+	for left < right {
+		mid := left + size/2
+		if predicate(collection[mid]) {
+			right = mid
+		} else {
+			left = mid + 1
+		}
+	}
+	return left
+}
+
 // Flatten returns an array a single level deep.
 func Flatten[T any](collection [][]T) []T {
 	result := []T{}
