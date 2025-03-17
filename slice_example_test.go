@@ -28,6 +28,21 @@ func ExampleMap() {
 	// Output: [2 4 6 8]
 }
 
+func ExampleUniqMap() {
+	type User struct {
+		Name string
+		Age  int
+	}
+	users := []User{{Name: "Alex", Age: 10}, {Name: "Alex", Age: 12}, {Name: "Bob", Age: 11}, {Name: "Alice", Age: 20}}
+
+	result := UniqMap(users, func(u User, index int) string {
+		return u.Name
+	})
+
+	fmt.Printf("%v", result)
+	// Output: [Alex Bob Alice]
+}
+
 func ExampleFilterMap() {
 	list := []int64{1, 2, 3, 4}
 
@@ -89,6 +104,22 @@ func ExampleForEach() {
 	// 4
 }
 
+func ExampleForEachWhile() {
+	list := []int64{1, 2, -math.MaxInt, 4}
+
+	ForEachWhile(list, func(x int64, _ int) bool {
+		if x < 0 {
+			return false
+		}
+		fmt.Println(x)
+		return true
+	})
+
+	// Output:
+	// 1
+	// 2
+}
+
 func ExampleTimes() {
 	result := Times(3, func(i int) string {
 		return strconv.FormatInt(int64(i), 10)
@@ -132,6 +163,22 @@ func ExampleGroupBy() {
 	// [0 3]
 	// [1 4]
 	// [2 5]
+}
+
+func ExampleGroupByMap() {
+	list := []int{0, 1, 2, 3, 4, 5}
+
+	result := GroupByMap(list, func(i int) (int, int) {
+		return i % 3, i * 2
+	})
+
+	fmt.Printf("%v\n", result[0])
+	fmt.Printf("%v\n", result[1])
+	fmt.Printf("%v\n", result[2])
+	// Output:
+	// [0 6]
+	// [2 8]
+	// [4 10]
 }
 
 func ExampleChunk() {
@@ -245,15 +292,42 @@ func ExampleKeyBy() {
 	// Output: map[1:a 2:aa 3:aaa]
 }
 
-func ExampleAssociate() {
+func ExampleSliceToMap() {
 	list := []string{"a", "aa", "aaa"}
 
-	result := Associate(list, func(str string) (string, int) {
+	result := SliceToMap(list, func(str string) (string, int) {
 		return str, len(str)
 	})
 
 	fmt.Printf("%v", result)
 	// Output: map[a:1 aa:2 aaa:3]
+}
+
+func ExampleFilterSliceToMap() {
+	list := []string{"a", "aa", "aaa"}
+
+	result := FilterSliceToMap(list, func(str string) (string, int, bool) {
+		return str, len(str), len(str) > 1
+	})
+
+	fmt.Printf("%v", result)
+	// Output: map[aa:2 aaa:3]
+}
+
+func ExampleKeyify() {
+	list := []string{"a", "a", "b", "b", "d"}
+
+	set := Keyify(list)
+	_, ok1 := set["a"]
+	_, ok2 := set["c"]
+	fmt.Printf("%v\n", ok1)
+	fmt.Printf("%v\n", ok2)
+	fmt.Printf("%v\n", set)
+
+	// Output:
+	// true
+	// false
+	// map[a:{} b:{} d:{}]
 }
 
 func ExampleDrop() {
@@ -294,6 +368,15 @@ func ExampleDropRightWhile() {
 
 	fmt.Printf("%v", result)
 	// Output: [0 1 2]
+}
+
+func ExampleDropByIndex() {
+	list := []int{0, 1, 2, 3, 4, 5}
+
+	result := DropByIndex(list, 2)
+
+	fmt.Printf("%v", result)
+	// Output: [0 1 3 4 5]
 }
 
 func ExampleReject() {
